@@ -1,0 +1,8 @@
+digraph {
+"0 Xena" ->"1 Lea"
+"1 Lea" ->"3 Jeremias"
+"1 Lea" ->"4 Marta"
+"3 Jeremias" ->"7 Guta"
+"4 Marta" ->"10 Walter"
+"7 Guta" ->"15 Andre"
+}
