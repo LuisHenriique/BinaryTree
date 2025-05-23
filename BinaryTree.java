@@ -36,7 +36,8 @@ public class BinaryTree {
     }
 
     public void set_valor_binaryTree(int i, String value) {
-        this.heapTree[i] = value;
+        if (i < this.get_tam())
+            this.heapTree[i] = value;
     }
 
     //Protected methods
@@ -158,125 +159,68 @@ public class BinaryTree {
 
 
     public boolean remove_node(String node) {
-        //Remoção é divida em 3 casos, sendo 1 caso o nó não possuí filhos, 2 caso é quando o nó tem um filho e 3 e último caso é quando o nó tem os 2 filhos
-
         int i = 0;
         while (i < this.get_tam() && this.heapTree[i] != null) {
-            //Encontrei o node
             if (Objects.equals(this.heapTree[i], node)) {
-                //verifico o filho esquerdo ou o direito se são nulos
-
-                int filhoEsq = 2 * i + 1;
-                int filhoDir = 2 * i + 2;
-                int novaPosicaoDoFilhoDoRemovido = 0 ;
-
-
-                //1º caso
-                if ((Objects.equals(this.heapTree[2 * i + 1], null)) && (Objects.equals(this.heapTree[2 * i + 2], null))) {
-
-                    this.heapTree[i] = null;
-                    this.set_tam_atual(this.get_tam_atual() - 1);
-                    return true;
-                }
-                //2º caso
-
-                // esquerda nulo e direita != nulo
-                if ((Objects.equals(this.heapTree[2 * i + 1], null)) && this.heapTree[2 * i + 2] != null) {
-                    this.heapTree[i] = this.heapTree[filhoDir];
-                    novaPosicaoDoFilhoDoRemovido = i;
-                    ordena_sub_arvores(filhoDir, novaPosicaoDoFilhoDoRemovido);
-
-                    this.set_tam_atual(this.get_tam_atual() - 1);
-                    return true;
-
-
-                }
-                // direita nulo e esquerda != nulo
-                else if ((Objects.equals(this.heapTree[2 * i + 2], null)) && this.heapTree[2 * i + 1] != null) {
-                    int filhoEsquerdo = 2 * i + 1;
-                    this.heapTree[i] = this.heapTree[filhoEsquerdo];
-                    novaPosicaoDoFilhoDoRemovido = i;
-
-                    ordena_sub_arvores(filhoEsq, novaPosicaoDoFilhoDoRemovido);
-
-                    this.set_tam_atual(this.get_tam_atual() - 1);
-                    return true;
-
-                }
-                //3º caso
-                if (this.heapTree[2 * i + 1] != null && this.heapTree[2 * i + 2] != null) {
-
-                    int substituto = filhoEsq;// vai para a subárvore esquerda
-                    while (substituto < this.get_tam() && substituto * 2 + 2 < this.get_tam() && this.heapTree[2 * substituto + 2] != null) {
-                        substituto = 2 * substituto + 2; // procuro os filhos a direita do nó, para pegar o maior nó da sub-árvore esquerda
-                    }
-
-                    this.heapTree[i] = this.heapTree[substituto];
-                    novaPosicaoDoFilhoDoRemovido = i;
-
-                    ordena_sub_arvores(substituto, novaPosicaoDoFilhoDoRemovido);
-
-                    this.set_tam_atual(this.get_tam_atual() - 1);
-                    return true;
-
-                }
-
-
-                return false;
-            }
-            // elemento procurado é menor que o atual
-            else if (node.compareTo(this.heapTree[i]) < 0) i = 2 * i + 1;
-            else// elemento procurado é maior que o atual
+                removeNodeAt(i);
+                this.set_tam_atual(this.get_tam_atual() - 1);
+                return true;
+            } else if (node.compareTo(this.heapTree[i]) < 0) {
+                i = 2 * i + 1;
+            } else {
                 i = 2 * i + 2;
+            }
         }
         return false;
-
     }
 
-    private void ordena_sub_arvores(int filhoDoNoRemovido, int novaPosicaoDoFilhoDoRemovido) {
-        int filhoEsq = 2 * filhoDoNoRemovido + 1;
-        int filhoDir = 2 * filhoDoNoRemovido + 2;
+    private void removeNodeAt(int index) {
+        int lastIndex = findLastNodeIndex();
 
-
-        int filhoEsqNovaPosicao = 2 * novaPosicaoDoFilhoDoRemovido + 1;
-        int filhoDirNovaPosicao = 2 * novaPosicaoDoFilhoDoRemovido + 2;
-
-        // Caso o nó não tenha filhos, define ele como null
-        if (filhoEsq < this.get_tam() && this.heapTree[filhoEsq] == null && filhoDir < this.get_tam() && this.heapTree[filhoDir] == null) {
-            this.heapTree[filhoDoNoRemovido] = null;
+        // Caso 1: Nó folha
+        if (2 * index + 1 >= this.get_tam() ||
+                (this.heapTree[2 * index + 1] == null &&
+                        this.heapTree[2 * index + 2] == null)) {
+            this.heapTree[index] = null;
         }
-        // Caso o nó tenha os dois filhos
-        if(filhoEsq < this.get_tam() && this.heapTree[filhoEsq] != null && filhoDir < this.get_tam() && this.heapTree[filhoDir] != null){
-            this.heapTree[filhoDirNovaPosicao]  = this.heapTree[filhoDir];
-            this.heapTree[filhoDoNoRemovido] = this.heapTree[filhoEsq];
-            this.heapTree[filhoDir] = this.heapTree[2 * filhoEsq + 2 ];
+        // Caso 2: Apenas um filho
+        else if (this.heapTree[2 * index + 1] == null || this.heapTree[2 * index + 2] == null) {
+            int childIndex = (this.heapTree[2 * index + 1] != null) ? 2 * index + 1 : 2 * index + 2;
+            shiftSubtreeUp(childIndex, index);
         }
-        // Verifica se o filho esquerdo do filhoDoNoRemovido está dentro do limite da árvore
-        if (filhoEsq < this.get_tam() && this.heapTree[filhoEsq] != null) {
-            // Coloco o filho esquerdo do filhoDireitoDoNoRemovido na esquerda da novaPosicaoDoNoRemovido
-            this.heapTree[filhoEsqNovaPosicao] = this.heapTree[filhoEsq];
-            this.heapTree[filhoDoNoRemovido] = null;
-            if(2 * filhoEsq + 1 < this.get_tam() && this.heapTree[2 * filhoEsq + 1] == null)
-                this.heapTree[filhoEsq] = null ;
+        // Caso 3: Dois filhos
+        else {
+            // Encontrar o maior elemento da subárvore esquerda
+            int predecessor = 2 * index + 1;
+            while (2 * predecessor + 2 < this.get_tam() && this.heapTree[2 * predecessor + 2] != null) {
+                predecessor = 2 * predecessor + 2;
+            }
 
+            this.heapTree[index] = this.heapTree[predecessor];
+            removeNodeAt(predecessor);
         }
+    }
 
-        // Verifica se o filho direito está dentro do limite da árvore
-        if (filhoDir < this.get_tam() && this.heapTree[filhoDir] != null) {
-            // Coloco o filho direito do filhoEsquerdoDoNoRemovido na direita da novaPosicaoDoNoRemovido
-            this.heapTree[filhoDirNovaPosicao] = this.heapTree[filhoDir];
-            this.heapTree[filhoDoNoRemovido] = null;
-            if(2 * filhoDir + 2 < this.get_tam() && this.heapTree[2 * filhoDir + 2] == null)
-                this.heapTree[filhoDir] = null ;
+    private void shiftSubtreeUp(int subtreeRoot, int newPosition) {
+        if (subtreeRoot >= this.get_tam() || this.heapTree[subtreeRoot] == null) {
+            return;
         }
 
-        // Chama recursivamente para garantir que a subárvore á baixo também esteja em ordem
-        if (filhoEsq < this.get_tam() && this.heapTree[filhoEsq] != null) {
-            ordena_sub_arvores(filhoEsq, filhoEsqNovaPosicao);
+        this.heapTree[newPosition] = this.heapTree[subtreeRoot];
+        this.heapTree[subtreeRoot] = null;
+
+        // Mover filhos recursivamente
+        shiftSubtreeUp(2 * subtreeRoot + 1, 2 * newPosition + 1);
+        shiftSubtreeUp(2 * subtreeRoot + 2, 2 * newPosition + 2);
+    }
+
+    private int findLastNodeIndex() {
+        for (int i = this.get_tam() - 1; i >= 0; i--) {
+            if (this.heapTree[i] != null) {
+                return i;
+            }
         }
-        if (filhoDir < this.get_tam() && this.heapTree[filhoDir] != null) {
-            ordena_sub_arvores(filhoDir, filhoDirNovaPosicao);
-        }
+        return -1;
     }
 
     public boolean search_node(String node) {

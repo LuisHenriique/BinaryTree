@@ -1,4 +1,3 @@
-
 import java.io.PrintWriter;
 import java.io.IOException;
 
@@ -9,11 +8,11 @@ public class Main {
 
 
         Scanner scanner = new Scanner(System.in); // Criando o objeto Scanner, para ler do usuário.
-        BinaryTree abb = new BinaryTree(100); // ABB
-        BalanTree apb = new BalanTree(100); // ABB PB
-        AVLTree abAVL = new AVLTree(100);
+        BinaryTree abb = new BinaryTree(150); // ABB
+        BalanTree apb = new BalanTree(150); // ABB PB
+        AVLTree abAVL = new AVLTree(150);
 
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             String linha = scanner.nextLine();
 
             // Se a linha lida for vazia para o loop
@@ -25,12 +24,11 @@ public class Main {
             if (linha.startsWith("i ")) {
                 String value = linha.substring(2);
                 abb.append_node(value);
-                abb.status();
-                //apb.append_node(value);
+                abAVL.append_node(value);      // AVL
+                apb.append_node(value);
 
 
-                //abAVL.append_node(value);      // AVL
-                //abAVL.balancear_arvoreAVL(0);  // Balanceia a partir da raiz
+                abAVL.balancear_arvoreAVL(0);  // Balanceia a partir da raiz
 
             }
 
@@ -38,65 +36,17 @@ public class Main {
             if (linha.startsWith("d ")) {
                 String value = linha.substring(2);
                 if (abb.remove_node(value))
-                    abb.status();
 
-                // apb.remove_node(value);
+                apb.remove_node(value);
 
-                /*
-                * d Yara
-- d Iara
--d Iara
---d Nadia
--i Andre
--i Xena
--i Ze
--i Marta
--d Xena
--d Marta
--d Xena
--d Marta
-- i Beto
-- i Kelle
-- d Xena
-- i Guta
-- d Vania
--d Marta
--d Tadeu
-- d Beto
-- d Vania
-- d Carlos
-- i Jeremias
--d Uriel
--d Eliane
--d Omar
--d Carlos
--i Marta
--i Ze
--d Nadia
--d Ze
-i Daniela
-d Kelle
-d Carlos
-i Nadia
-i Tadeu
-d Queila
-d Omar
-d Guta
-i Beto
-d Lea
-i Ze
-i Marta
-d Paula
-*/
-              //  abAVL.remove_node(value);     // AVL
-              //  abAVL.balancear_arvoreAVL(0);  // Rebalanceia após remover
+                abAVL.remove_node(value);     // AVL
+                abAVL.balancear_arvoreAVL(0);  // Rebalanceia após remover
             }
 
         }
 
         // Balanceamento da Árvore perfeitamente balanceada após as remoções
-        if(!apb.is_balance())
-            apb.create_balance_tree();
+        if (!apb.is_balance()) apb.create_balance_tree();
 
         //Execução da chamada do toString();
         try (PrintWriter writer = new PrintWriter("abb.dot")) {

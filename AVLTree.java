@@ -45,11 +45,11 @@ public class AVLTree extends BinaryTree {
         // 2. Guardar valor de A e B
         String valorA = this.get_valor_binaryTree(indice);     // A
         String valorB = this.get_valor_binaryTree(indiceDir);  // B
-        System.out.println("\nvalor de a:"+valorA+"\n");
+
+      /*  System.out.println("\nvalor de a:"+valorA+"\n");
         System.out.println("\nvalor de b:"+valorB+"\n");
-
-        System.out.println("\nvalor de filho esquerdo de b:"+this.get_valor_binaryTree(2 *indiceDir + 1)+"\n");
-
+        System.out.println("\nvalor de filho direito de b:"+this.get_valor_binaryTree(filhoDirDeB)+"\n");
+       */
 
         // 3. Trocar A por B (B sobe)
         this.set_valor_binaryTree(indice, valorB);
@@ -63,16 +63,11 @@ public class AVLTree extends BinaryTree {
         // 6. Copiar subárvore direita de B para direita de novo B (em indice)
         copiarSubarvore(filhoDirDeB, 2 * indice + 2);
 
-        set_valor_binaryTree(2 * indiceEsq +1, this.get_valor_binaryTree(indiceEsq) ) ;
-
-
-
         // 7. Limpar antiga posição de B
+        //System.out.println("\n verifica\n" + this.get_valor_binaryTree(2 * indice + 2));
 
-        if(this.get_valor_binaryTree(filhoDirDeB) == null)
-            limparSubarvore(2*indice+2);
-        else
-            limparSubarvore(2 * indiceDir + 2);
+        if (this.get_valor_binaryTree(filhoDirDeB) == null) limparSubarvore(2 * indice + 2);
+        else limparSubarvore(2 * indiceDir + 2);
     }
 
     private void rotacionar_direita(int i) {
@@ -89,9 +84,9 @@ public class AVLTree extends BinaryTree {
         // 2. Guardar valor de A e B
         String valorA = this.get_valor_binaryTree(indice);     // A
         String valorB = this.get_valor_binaryTree(indiceEsq);  // B
-        System.out.println("\nvalor de a:"+valorA+"\n");
-        System.out.println("\nvalor de b:"+valorB+"\n");
-        System.out.println("\nvalor de filho esquerdo de b:"+this.get_valor_binaryTree(filhoEsqDeB)+"\n");
+        // System.out.println("\nvalor de a:"+valorA+"\n");
+        //System.out.println("\nvalor de b:"+valorB+"\n");
+        //System.out.println("\nvalor de filho esquerdo de b:"+this.get_valor_binaryTree(filhoEsqDeB)+"\n");
         // 3. Trocar A por B (B sobe)
         this.set_valor_binaryTree(indice, valorB);
 
@@ -105,13 +100,11 @@ public class AVLTree extends BinaryTree {
         copiarSubarvore(filhoEsqDeB, 2 * indice + 1);
 
 
-        System.out.println("\n verifica:\n" + this.get_valor_binaryTree(2 * indice+ 1));
-        System.out.println("\n verifica\n" + this.get_valor_binaryTree(2 * indiceEsq+ 1));
+        //System.out.println("\n verifica:\n" + this.get_valor_binaryTree(2 * indice+ 1));
+        //System.out.println("\n verifica\n" + this.get_valor_binaryTree(2 * indiceEsq+ 1));
 
-        if(this.get_valor_binaryTree(filhoEsqDeB) == null)
-            limparSubarvore(2*indice+1);
-        else
-            limparSubarvore(2 * indiceEsq+ 1);
+        if (this.get_valor_binaryTree(filhoEsqDeB) == null) limparSubarvore(2 * indice + 1);
+        else limparSubarvore(2 * indiceEsq + 1);
     }
 
 
@@ -119,12 +112,12 @@ public class AVLTree extends BinaryTree {
     private void rotacionar_esquerda_direita(int i) {
         int filhoEsq = 2 * i + 1;
         rotacionar_esquerda(filhoEsq);  // Rotação à esquerda no filho esquerdo
-     System.out.println("\n----------------------------------Apos rotação esquerda--------------a \n");
-       this.status();
+        // System.out.println("\n----------------------------------Apos rotação esquerda--------------a \n");
+        //this.status();
 
-        System.out.println("\n---------------------------------- rotação direita abaixo--------------a \n");
+        //System.out.println("\n---------------------------------- rotação direita abaixo--------------a \n");
         rotacionar_direita(i);          // Rotação à direita no nó atual
-        this.status();
+        // this.status();
 
     }
 
@@ -132,12 +125,12 @@ public class AVLTree extends BinaryTree {
     private void rotacionar_direita_esquerda(int i) {
         int filhoDir = 2 * i + 2;
         rotacionar_direita(filhoDir);   // Rotação à direita no filho direito
-        System.out.println("\n----------------------------------Apos rotação direita--------------a \n");
-        this.status();
+        // System.out.println("\n----------------------------------Apos rotação direita--------------a \n");
+        // this.status();
 
         rotacionar_esquerda(i);         // Rotação à esquerda no nó atual
-        System.out.println("\n----------------------------------Apos rotação esquerda--------------a \n");
-        this.status();
+        // System.out.println("\n----------------------------------Apos rotação esquerda--------------a \n");
+        // this.status();
     }
 
 
@@ -146,6 +139,7 @@ public class AVLTree extends BinaryTree {
         if (i >= this.get_tam() || this.get_valor_binaryTree(i) == null) return 0;
         return 1 + Math.max(altura(2 * i + 1), altura(2 * i + 2));
     }
+
     public void balancear_arvoreAVL(int i) {
         if (i >= this.get_tam() || this.get_valor_binaryTree(i) == null) return;
 
@@ -162,8 +156,8 @@ public class AVLTree extends BinaryTree {
             if (fbFilho >= 0) {
                 // LL: Rotação simples à direita
                 this.rotacionar_direita(i);
-                System.out.println("\n----------------------------------Apos rotação direita simples--------------a \n");
-                this.status();
+                //  System.out.println("\n----------------------------------Apos rotação direita simples--------------a \n");
+                // this.status();
             } else {
                 // LR: Rotação dupla esquerda-direita
                 this.rotacionar_esquerda_direita(i);
@@ -175,8 +169,8 @@ public class AVLTree extends BinaryTree {
             if (fbFilho <= 0) {
                 // RR: Rotação simples à esquerda
                 this.rotacionar_esquerda(i);
-                System.out.println("\n----------------------------------Apos rotação esquerda simples--------------a \n");
-                this.status();
+                //System.out.println("\n----------------------------------Apos rotação esquerda simples--------------a \n");
+                //this.status();
             } else {
                 // RL: Rotação dupla direita-esquerda
                 this.rotacionar_direita_esquerda(i);

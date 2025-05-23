@@ -1,5 +1,5 @@
 all:
-		javac BinaryTree.java Main.java
+		javac BinaryTree.java Main.java BalanTree.java AVLTree.java
 
 
 run: 
